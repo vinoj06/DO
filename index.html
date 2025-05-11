@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Effortless Expense Tracking</h2>
+    <p>Click the button below to add the latest expense from the Entry sheet to the database.</p>
+    <button onclick="submitExpense()">Add Expense</button>
+    
+    <p id="status"></p>
+
+    <script>
+      function submitExpense() {
+        document.getElementById("status").innerHTML = "Processing...";
+        
+        google.script.run.withSuccessHandler(function(response) {
+          document.getElementById("status").innerHTML = response;
+        }).withFailureHandler(function(error) {
+          document.getElementById("status").innerHTML = "Error: " + error.message;
+        }).getEntryData().then(function(entryData) {
+          google.script.run.withSuccessHandler(function(msg) {
+            document.getElementById("status").innerHTML = msg;
+          }).addExpense(entryData);
+        });
+      }
+    </script>
+  </body>
+</html>
